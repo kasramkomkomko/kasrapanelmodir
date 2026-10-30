@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>داشبورد</h1>
+{% if bot_user %}<div class="hint" style="margin-bottom:12px">ربات فعال: <b dir="ltr">@{{ bot_user }}</b></div>{% else %}<div class="flash bad">ربات فعال نیست. از <a href="/settings">تنظیمات</a> توکن را بررسی کنید.</div>{% endif %}
+{% if ephemeral %}<div class="flash bad">دیتابیس دائمی نیست؛ با هر دیپلوی اطلاعات پاک می‌شود. در Railway یک PostgreSQL اضافه کنید و DATABASE_URL را به سرویس وصل کنید (یا Volume روی /data بگذارید).</div>{% endif %}
+<div class="stats">
+  <div class="stat {{ 'hot' if stats.pending else '' }}"><b>{{ stats.pending }}</b><span>رسید در انتظار</span></div>
+  <div class="stat"><b>{{ stats.users }}</b><span>کاربر</span></div>
+  <div class="stat"><b>{{ stats.services }}</b><span>سرویس فروخته‌شده</span></div>
+  <div class="stat"><b>{{ stats.income|money }}</b><span>شارژ تایید‌شده ({{ CURRENCY }})</span></div>
+  <div class="stat"><b>{{ stats.panels }}</b><span>پنل متصل</span></div>
+</div>
+<div class="card">
+  <h2>رسیدهای در انتظار</h2>
+  {% if pend %}
+  <div class="scroll"><table>
+  {% for o in pend %}<tr>
+    <td>#{{ o.id }}</td><td>{{ o.user.username or o.user.tg_id }}</td><td>{{ o.amount|money }} {{ CURRENCY }}</td>
+    <td><a href="/receipt/{{ o.id }}" target="_blank" rel="noopener">رسید</a></td>
+    <td>
+      <form class="inline" method="post" action="/orders/{{ o.id }}/approve"><button class="btn green">تایید</button></form>
+      <form class="inline" method="post" action="/orders/{{ o.id }}/reject"><button class="btn red">رد</button></form>
+    </td></tr>{% endfor %}
+  </table></div>
+  {% else %}<div class="empty">رسید جدیدی نیست.</div>{% endif %}
+</div>
+{% if not stats.panels %}<div class="card">برای شروع، <a href="/panels">یک پنل اضافه کنید</a> و بعد <a href="/plans">پلن بسازید</a>.</div>{% endif %}
+{% endblock %}

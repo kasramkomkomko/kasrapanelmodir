@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}پنل‌ها{% endblock %}
+{% block body %}
+<h1>پنل‌های کانفیگ</h1>
+<div class="card">
+  <h2>افزودن پنل</h2>
+  <p style="margin:0 0 12px;color:var(--mut);font-size:13px">آدرس، نام کاربری و رمز را وارد کنید؛ نوع پنل خودکار تشخیص داده می‌شود. برای هیدیفای آدرس را با مسیر پروکسی بنویسید و در فیلد رمز، API Key را بگذارید.</p>
+  <form class="row" method="post" action="/panels/add">
+    <label>نام نمایشی<input name="name" placeholder="آلمان ۱"></label>
+    <label>آدرس پنل<input name="url" placeholder="https://panel.example.com:8000" required dir="ltr"></label>
+    <label>نام کاربری<input name="username" autocomplete="off" dir="ltr"></label>
+    <label>رمز عبور / API Key<input name="password" type="password" autocomplete="new-password" required dir="ltr"></label>
+    <button class="btn">شناسایی و ذخیره</button>
+    <details style="flex-basis:100%"><summary>تنظیمات 3x-ui (اختیاری)</summary>
+      <div class="row" style="margin-top:8px">
+        <label>شماره اینباند<input name="inbound_id" inputmode="numeric" placeholder="خالی = اولین اینباند فعال" dir="ltr"></label>
+        <label>آدرس پایه ساب<input name="sub_base" placeholder="https://sub.example.com:2096/sub/" dir="ltr"></label>
+      </div>
+    </details>
+  </form>
+</div>
+<div class="card scroll">
+  {% if panels %}
+  <table><tr><th>نام</th><th>نوع</th><th>آدرس</th><th>پلن‌ها</th><th>وضعیت</th><th></th></tr>
+  {% for p in panels %}<tr>
+    <td>{{ p.name }}</td><td>{{ TYPE_LABELS.get(p.ptype, p.ptype) }}</td><td><code>{{ p.url }}</code></td>
+    <td>{{ counts.get(p.id, 0) }}</td>
+    <td><span class="tag {{ 'ok' if p.active else 'bad' }}">{{ 'فعال' if p.active else 'غیرفعال' }}</span></td>
+    <td>
+      <form class="inline" method="post" action="/panels/{{ p.id }}/test"><button class="btn ghost">تست اتصال</button></form>
+      <form class="inline" method="post" action="/panels/{{ p.id }}/toggle"><button class="btn ghost">{{ 'غیرفعال' if p.active else 'فعال' }}‌سازی</button></form>
+      <form class="inline" method="post" action="/panels/{{ p.id }}/delete" onsubmit="return confirm('حذف این پنل؟')"><button class="btn red">حذف</button></form>
+    </td></tr>{% endfor %}
+  </table>
+  {% else %}<div class="empty">هنوز پنلی اضافه نشده.</div>{% endif %}
+</div>
+{% endblock %}

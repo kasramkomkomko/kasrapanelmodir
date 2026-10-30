@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}رسیدها{% endblock %}
+{% block body %}
+<h1>رسیدهای شارژ</h1>
+<div class="card scroll">
+  {% if orders %}
+  <table><tr><th>#</th><th>کاربر</th><th>مبلغ</th><th>تاریخ</th><th>رسید</th><th>وضعیت</th><th></th></tr>
+  {% for o in orders %}<tr>
+    <td>{{ o.id }}</td><td>{{ o.user.username or o.user.tg_id }}</td><td>{{ o.amount|money }}</td>
+    <td>{{ o.created.strftime('%Y-%m-%d %H:%M') }}</td>
+    <td>{% if o.receipt_file_id %}<a href="/receipt/{{ o.id }}" target="_blank" rel="noopener">مشاهده</a>{% endif %}</td>
+    <td>{% if o.status=='paid' %}<span class="tag ok">تایید شد</span>{% elif o.status=='rejected' %}<span class="tag bad">رد شد</span>{% else %}<span class="tag wait">در انتظار</span>{% endif %}</td>
+    <td>{% if o.status=='pending' %}
+      <form class="inline" method="post" action="/orders/{{ o.id }}/approve"><button class="btn green">تایید</button></form>
+      <form class="inline" method="post" action="/orders/{{ o.id }}/reject"><button class="btn red">رد</button></form>
+    {% endif %}</td></tr>{% endfor %}
+  </table>
+  {% else %}<div class="empty">هنوز رسیدی ثبت نشده.</div>{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}{% set hide_nav = True %}
+{% block title %}راه‌اندازی | {{ brand() }}{% endblock %}
+{% block body %}
+<div style="max-width:460px;margin:8vh auto 0">
+<h1>راه‌اندازی {{ brand() }}</h1>
+<div class="steps"><span class="{{ 'on' if step==1 else 'done' }}">توکن ربات</span><span class="{{ 'on' if step==2 else ('done' if step>2 else '') }}">ادمین</span><span class="{{ 'on' if step==3 else '' }}">رمز پنل</span></div>
+{% if flash %}{% endif %}
+<div class="card" style="display:grid;gap:12px">
+{% if step==1 %}
+  <form method="post" action="/setup/token" style="display:grid;gap:12px">
+    <label>توکن ربات (از BotFather)<input name="token" dir="ltr" placeholder="123456:ABC..." required autofocus autocomplete="off"></label>
+    <button class="btn">بررسی توکن</button>
+  </form>
+{% elif step==2 %}
+  <div>ربات <b dir="ltr">@{{ bot }}</b> شناسایی شد. اول آن را در تلگرام <b>استارت</b> کنید، بعد شناسه عددی خودتان را بدهید تا کد تایید بفرستم.</div>
+  <form method="post" action="/setup/admin" style="display:grid;gap:12px">
+    <label>شناسه عددی تلگرام ادمین<input name="admin_id" inputmode="numeric" dir="ltr" placeholder="مثلاً 123456789" required></label>
+    <div class="hint">شناسه را از ربات‌هایی مثل @userinfobot می‌توانید بگیرید.</div>
+    <button class="btn">ارسال کد تایید</button>
+  </form>
+  <form method="post" action="/setup/reset"><button class="btn ghost">توکن دیگر</button></form>
+{% else %}
+  <div>کد ۶ رقمی به تلگرام ادمین ارسال شد.</div>
+  <form method="post" action="/setup/finish" style="display:grid;gap:12px">
+    <label>کد تایید<input name="code" inputmode="numeric" dir="ltr" required autofocus autocomplete="one-time-code"></label>
+    <label>رمز پنل وب<input name="password" type="password" minlength="6" required autocomplete="new-password"></label>
+    <label>تکرار رمز<input name="password2" type="password" minlength="6" required autocomplete="new-password"></label>
+    <button class="btn green">پایان راه‌اندازی</button>
+  </form>
+  <form method="post" action="/setup/reset"><button class="btn ghost">شروع دوباره</button></form>
+{% endif %}
+</div>
+</div>
+{% endblock %}

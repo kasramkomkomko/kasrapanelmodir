@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}پلن‌ها{% endblock %}
+{% block body %}
+<h1>پلن‌های فروش</h1>
+<div class="card">
+  <h2>پلن جدید</h2>
+  {% if panels %}
+  <form class="row" method="post" action="/plans/add">
+    <label>نام پلن<input name="name" placeholder="یک ماهه ۵۰ گیگ" required></label>
+    <label>پنل<select name="panel_id">{% for p in panels %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select></label>
+    <label>مدت (روز، ۰ = بدون انقضا)<input name="days" type="number" min="0" value="30" required></label>
+    <label>حجم (گیگ، ۰ = نامحدود)<input name="gb" type="number" min="0" value="50" required></label>
+    <label>قیمت ({{ CURRENCY }})<input name="price" type="number" min="0" required></label>
+    <button class="btn green">افزودن پلن</button>
+  </form>
+  {% else %}<div class="empty">اول یک <a href="/panels">پنل فعال اضافه کنید</a>.</div>{% endif %}
+</div>
+<div class="card scroll">
+  {% if plans %}
+  <table><tr><th>نام</th><th>پنل</th><th>مدت</th><th>حجم</th><th>قیمت</th><th>وضعیت</th><th></th></tr>
+  {% for p in plans %}<tr>
+    <td>{{ p.name }}</td><td>{{ p.panel.name }}</td><td>{{ p.days or 'بدون انقضا' }}</td><td>{{ p.gb or 'نامحدود' }}</td>
+    <td>{{ p.price|money }}</td>
+    <td><span class="tag {{ 'ok' if p.active else 'bad' }}">{{ 'در فروش' if p.active else 'متوقف' }}</span></td>
+    <td>
+      <form class="inline" method="post" action="/plans/{{ p.id }}/toggle"><button class="btn ghost">{{ 'توقف فروش' if p.active else 'شروع فروش' }}</button></form>
+      <form class="inline" method="post" action="/plans/{{ p.id }}/delete" onsubmit="return confirm('حذف این پلن؟')"><button class="btn red">حذف</button></form>
+    </td></tr>{% endfor %}
+  </table>
+  {% else %}<div class="empty">هنوز پلنی ساخته نشده.</div>{% endif %}
+</div>
+{% endblock %}

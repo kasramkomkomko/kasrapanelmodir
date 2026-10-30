@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}سرویس‌ها{% endblock %}
+{% block body %}
+<h1>سرویس‌های فروخته‌شده</h1>
+<div class="card scroll">
+  {% if svcs %}
+  <table><tr><th>کاربر</th><th>پلن</th><th>پنل</th><th>نام روی پنل</th><th>انقضا</th><th></th></tr>
+  {% for x in svcs %}<tr>
+    <td>{{ x.user.username or x.user.tg_id }}</td><td>{{ x.plan.name }}</td><td>{{ x.panel.name }}</td>
+    <td><code>{{ x.username }}</code></td>
+    <td>{{ x.expire_at.strftime('%Y-%m-%d') if x.expire_at else 'بدون انقضا' }}</td>
+    <td><form class="inline" method="post" action="/services/{{ x.id }}/delete" onsubmit="return confirm('سرویس از پنل هم حذف می‌شود. ادامه؟')"><button class="btn red">حذف</button></form></td>
+  </tr>{% endfor %}
+  </table>
+  {% else %}<div class="empty">هنوز سرویسی فروخته نشده.</div>{% endif %}
+</div>
+{% endblock %}

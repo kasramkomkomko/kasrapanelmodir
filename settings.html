@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}تنظیمات{% endblock %}
+{% block body %}
+<h1>تنظیمات</h1>
+<div class="card">
+  <h2>اطلاعات فروشگاه</h2>
+  <form class="row" method="post" action="/settings/general">
+    <label>نام برند<input name="brand" value="{{ v.brand or 'soulsvpn' }}" required></label>
+    <label>نام مالک<input name="owner_name" value="{{ v.owner_name }}"></label>
+    <label>آیدی پشتیبانی<input name="support_id" value="{{ v.support_id }}" placeholder="@support" dir="ltr"></label>
+    <label>شماره کارت<input name="card_number" value="{{ v.card_number }}" dir="ltr"></label>
+    <label>نام صاحب کارت<input name="card_holder" value="{{ v.card_holder }}"></label>
+    <label>حداقل شارژ<input name="min_topup" value="{{ v.min_topup or 10000 }}" inputmode="numeric"></label>
+    <label style="flex-basis:100%">شناسه ادمین‌ها (با کاما)<input name="admin_ids" value="{{ v.admin_ids }}" dir="ltr" required></label>
+    <button class="btn green">ذخیره</button>
+  </form>
+  <div class="hint" style="margin-top:8px">متغیرهای {brand} و {owner} و {support} در متن پیام‌ها از همین بخش خوانده می‌شوند.</div>
+</div>
+<div class="card">
+  <h2>توکن ربات</h2>
+  <p class="hint" style="margin:0 0 10px">ربات فعلی: {% if bot_user %}<b dir="ltr">@{{ bot_user }}</b>{% else %}فعال نیست{% endif %}. با ثبت توکن جدید، ربات همین‌جا و بدون ری‌استارت عوض می‌شود.</p>
+  <form class="row" method="post" action="/settings/token">
+    <label>توکن جدید<input name="token" dir="ltr" required autocomplete="off"></label>
+    <button class="btn">تغییر توکن</button>
+  </form>
+</div>
+<div class="card">
+  <h2>رمز پنل</h2>
+  <form class="row" method="post" action="/settings/password">
+    <label>رمز فعلی<input name="current" type="password" required autocomplete="current-password"></label>
+    <label>رمز جدید<input name="new" type="password" minlength="6" required autocomplete="new-password"></label>
+    <button class="btn">تغییر رمز</button>
+  </form>
+</div>
+{% endblock %}

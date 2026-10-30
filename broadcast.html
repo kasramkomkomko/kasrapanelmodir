@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}پیام‌ها{% endblock %}
+{% block body %}
+<h1>پیام‌ها</h1>
+{% if not online %}<div class="flash bad">ربات فعال نیست؛ ارسال انجام نمی‌شود.</div>{% endif %}
+<div class="card">
+  <h2>پیام همگانی</h2>
+  {% if bc.total %}<p class="hint" style="margin:0 0 8px">آخرین ارسال: {{ bc.sent }} موفق، {{ bc.failed }} ناموفق از {{ bc.total }}{{ ' (در حال ارسال...)' if bc.running }}</p>{% endif %}
+  <form method="post" action="/broadcast/all" style="display:grid;gap:10px" onsubmit="return confirm('برای همه‌ی کاربران ارسال شود؟')">
+    <label>متن پیام<textarea name="text" required></textarea></label>
+    <div><button class="btn red">ارسال برای همه</button></div>
+  </form>
+</div>
+<div class="card">
+  <h2>پیام شخصی</h2>
+  <form method="post" action="/broadcast/user" style="display:grid;gap:10px">
+    <label>شناسه عددی تلگرام کاربر<input name="tg_id" value="{{ to }}" inputmode="numeric" dir="ltr" required></label>
+    <label>متن پیام<textarea name="text" required></textarea></label>
+    <div><button class="btn">ارسال به این کاربر</button></div>
+  </form>
+  <div class="hint" style="margin-top:8px">کاربر باید قبلاً ربات را استارت کرده باشد.</div>
+</div>
+{% endblock %}

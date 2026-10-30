@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% set hide_nav = True %}
+{% block title %}ورود | {{ brand() }}{% endblock %}
+{% block body %}
+<div style="max-width:340px;margin:12vh auto 0">
+<h1>{{ brand() }}</h1>
+<form class="card" method="post" action="/login" style="display:grid;gap:12px">
+  <label>رمز عبور پنل<input name="password" type="password" autocomplete="current-password" required autofocus></label>
+  <button class="btn">ورود به پنل</button>
+</form>
+</div>
+{% endblock %}

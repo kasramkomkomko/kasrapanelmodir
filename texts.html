@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}متن و دکمه‌ها{% endblock %}
+{% block body %}
+<h1>متن پیام‌ها و دکمه‌ها</h1>
+<p class="hint">هر متن را عوض کنید و ذخیره بزنید؛ فوراً روی ربات اعمال می‌شود. متن‌ها HTML تلگرام می‌پذیرند (&lt;b&gt; &lt;i&gt; &lt;code&gt;). متغیرها داخل آکولاد نوشته می‌شوند و باید دست‌نخورده بمانند.</p>
+<form method="post" action="/texts/save">
+{% for g, items in groups %}
+<div class="card">
+  <h2>{{ g }}</h2>
+  <div style="display:grid;gap:14px">
+  {% for it in items %}
+    <div>
+      <label>{{ it.label }}
+      {% if it.kind=='btn' %}
+        <span style="display:flex;gap:8px"><input name="t_{{ it.key }}" value="{{ it.value }}" maxlength="60" style="flex:1">
+        <select name="s_{{ it.key }}" style="width:130px" aria-label="رنگ دکمه">
+          {% for val,lab in [('default','رنگ پیش‌فرض'),('none','بدون رنگ'),('primary','آبی'),('success','سبز'),('danger','قرمز')] %}
+          <option value="{{ val }}" {{ 'selected' if it.style_now==val }}>{{ lab }}</option>{% endfor %}
+        </select></span>
+      {% else %}
+        <textarea name="t_{{ it.key }}" rows="{{ [2, it.value.count('\n')+2]|max }}">{{ it.value }}</textarea>
+      {% endif %}
+      </label>
+      {% if it.vars or it.kind=='btn' %}<div class="hint">متغیرهای این بخش: {{ it.vars or '—' }} {brand} {owner} {support} {currency}</div>{% endif %}
+    </div>
+  {% endfor %}
+  </div>
+</div>
+{% endfor %}
+<div class="save"><button class="btn green">ذخیره همه</button></div>
+</form>
+<form method="post" action="/texts/reset" onsubmit="return confirm('همه‌ی متن‌ها و رنگ‌ها به پیش‌فرض برگردد؟')" style="margin-top:12px"><button class="btn ghost">بازگشت همه به پیش‌فرض</button></form>
+{% endblock %}

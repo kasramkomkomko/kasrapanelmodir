@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}کاربران{% endblock %}
+{% block body %}
+<h1>کاربران</h1>
+<div class="card scroll">
+  {% if users %}
+  <table><tr><th>نام</th><th>شناسه تلگرام</th><th>موجودی</th><th>تغییر موجودی</th><th></th></tr>
+  {% for u in users %}<tr>
+    <td>{{ u.username or '—' }} {% if u.banned %}<span class="tag bad">مسدود</span>{% endif %}</td>
+    <td><code>{{ u.tg_id }}</code></td><td>{{ u.balance|money }}</td>
+    <td><form class="inline" method="post" action="/users/{{ u.id }}/balance" style="display:flex;gap:6px">
+      <input name="delta" type="number" placeholder="مثلاً 50000 یا -50000" required style="width:170px">
+      <button class="btn">ثبت</button></form></td>
+    <td><a class="btn ghost" href="/broadcast?to={{ u.tg_id }}">پیام</a> <form class="inline" method="post" action="/users/{{ u.id }}/ban"><button class="btn {{ 'green' if u.banned else 'red' }}">{{ 'رفع مسدودی' if u.banned else 'مسدود' }}</button></form></td>
+  </tr>{% endfor %}
+  </table>
+  {% else %}<div class="empty">هنوز کاربری وارد ربات نشده.</div>{% endif %}
+</div>
+{% endblock %}

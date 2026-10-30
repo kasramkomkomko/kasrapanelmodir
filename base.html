@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}{{ brand() }}{% endblock %}</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#edf1ef;--card:#fff;--ink:#12211f;--mut:#5d6b68;--line:#d5ddda;--pri:#0b6e65;--pri-t:#fff;--ok:#1a7f3c;--bad:#b3261e;--warn:#a55b00;--side:#12211f;--side-t:#cfe0dc}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1514;--card:#16201e;--ink:#e6efed;--mut:#93a5a1;--line:#27342f;--pri:#2bb5a6;--pri-t:#06201d;--ok:#4cc27a;--bad:#ff7b72;--warn:#e3a14a;--side:#0a100f;--side-t:#a9bfba}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.8 Vazirmatn,Tahoma,sans-serif}
+a{color:var(--pri)}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+nav.side{background:var(--side);padding:20px 12px;position:sticky;top:0;height:100vh}
+nav.side .brand{color:#fff;font-weight:800;font-size:18px;padding:0 10px 18px}
+nav.side a{display:block;color:var(--side-t);text-decoration:none;padding:9px 12px;border-radius:8px;margin-bottom:2px}
+nav.side a.on{background:var(--pri);color:var(--pri-t);font-weight:600}
+nav.side a:hover:not(.on){background:rgba(255,255,255,.07)}
+nav.side .out{margin-top:18px;color:#f1a29b}
+main{padding:28px;max-width:1100px;width:100%}
+h1{font-size:22px;margin:0 0 18px;font-weight:800}
+h2{font-size:16px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat b{display:block;font-size:24px;font-weight:800}
+.stat span{color:var(--mut);font-size:13px}
+.stat.hot{border-color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
+th{color:var(--mut);font-weight:600;font-size:13px}
+.scroll{overflow-x:auto}
+form.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+form.inline{display:inline}
+label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--mut);flex:1 1 150px}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+textarea{resize:vertical;min-height:90px;line-height:1.7}
+.steps{display:flex;gap:8px;margin-bottom:16px}.steps span{flex:1;text-align:center;padding:6px;border-radius:8px;border:1px solid var(--line);color:var(--mut);font-size:13px}.steps span.on{background:var(--pri);color:var(--pri-t);border-color:var(--pri)}.steps span.done{color:var(--ok);border-color:var(--ok)}
+.save{position:sticky;bottom:0;background:var(--bg);padding:12px 0;border-top:1px solid var(--line);display:flex;gap:10px}
+.hint{font-size:12px;color:var(--mut)}
+.btn{font:600 13px Vazirmatn,Tahoma,sans-serif;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;background:var(--pri);color:var(--pri-t);text-decoration:none;display:inline-block}
+.btn.green{background:var(--ok);color:#fff}.btn.red{background:var(--bad);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.tag{display:inline-block;padding:1px 10px;border-radius:99px;font-size:12px;border:1px solid var(--line);color:var(--mut)}
+.tag.ok{color:var(--ok);border-color:var(--ok)}.tag.bad{color:var(--bad);border-color:var(--bad)}.tag.wait{color:var(--warn);border-color:var(--warn)}
+.flash{padding:10px 14px;border-radius:8px;margin-bottom:16px;border:1px solid var(--ok);color:var(--ok)}
+.flash.bad{border-color:var(--bad);color:var(--bad)}
+.empty{color:var(--mut);padding:10px 0}
+details summary{cursor:pointer;color:var(--mut);font-size:13px;margin-top:10px}
+code{direction:ltr;unicode-bidi:embed;font-size:12px}
+@media(max-width:760px){.shell{display:block}nav.side{position:static;height:auto;display:flex;gap:4px;overflow-x:auto;padding:10px}nav.side .brand{display:none}nav.side a{white-space:nowrap;margin:0}nav.side .out{margin:0}main{padding:16px}}
+</style>
+</head>
+<body>
+{% if not hide_nav %}
+<div class="shell">
+<nav class="side">
+  <div class="brand">{{ brand() }}</div>
+  {% for href,label in [('/','داشبورد'),('/orders','رسیدها'),('/plans','پلن‌ها'),('/panels','پنل‌ها'),('/users','کاربران'),('/services','سرویس‌ها'),('/broadcast','پیام‌ها'),('/texts','متن و دکمه‌ها'),('/settings','تنظیمات')] %}
+  <a href="{{ href }}" class="{{ 'on' if path==href else '' }}">{{ label }}</a>
+  {% endfor %}
+  <a href="/logout" class="out">خروج</a>
+</nav>
+<main>
+{% else %}<main style="margin:auto">{% endif %}
+{% if flash %}<div class="flash {{ flash[1] if flash[1]=='bad' else '' }}" role="status">{{ flash[0] }}</div>{% endif %}
+{% block body %}{% endblock %}
+</main>
+{% if not hide_nav %}</div>{% endif %}
+</body>
+</html>
